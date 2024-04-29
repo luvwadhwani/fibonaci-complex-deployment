@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/values/all', async (req, res) => {
-    const values = await pgClient.query('SELECT * FROM values');
+    const values = await pgClient.query('SELECT distinct * FROM values ORDER BY number ASC');
     res.send(values.rows);
 })
 
