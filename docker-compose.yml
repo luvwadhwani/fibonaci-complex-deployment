@@ -1,6 +1,12 @@
 version: '3.4'
 
 services:
+  nginx:
+    restart: always
+    build:
+      context: ./nginx
+    ports:
+      - '3050:80'
   postgres:
     image: postgres
     environment:
@@ -8,9 +14,7 @@ services:
       - POSTGRES_PASSWORD=postgres
   redis:
     image: redis
-  server:
-    ports:
-      - "4000:4000"
+  api:
     build:
       context: ./server
     volumes:
@@ -24,3 +28,20 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_PORT=5432
+  client:
+    environment:
+      - WDS_SOCKET_PORT=0
+    build:
+      context: ./client
+    volumes:
+      - /usr/app/node_modules
+      - ./client:/usr/app
+  worker:
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    build:
+      context: ./worker
+    volumes:
+      - /usr/app/node_modules
+      - ./worker:/usr/app

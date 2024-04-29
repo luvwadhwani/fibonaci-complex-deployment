@@ -24,13 +24,18 @@ pgClient.query('CREATE TABLE IF NOT EXISTS values (number INT)')
 
 
 const redis = require('redis');
-const redisClient = redis.createClient({
-    host: keys.redisHost,
-    port: keys.redisPort,
-    retry_strategy: () => 1000
+
+let redisClient = redis.createClient({
+    url: process.env.REDIS_HOST + '://' + process.env.REDIS_HOST + ':' +process.env.REDIS_PORT
 })
 
-const redisPublisher = redisClient.duplicate();
+let redisPublisher = undefined
+
+async function initializeRedis() {
+    redisClient = await redisClient.connect();
+}
+
+initializeRedis().catch(err => console.log(err));
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
@@ -41,7 +46,7 @@ app.get('/values/all', async (req, res) => {
     res.send(values.rows);
 })
 
-app.get('values/current', async (req, res) => {
+app.get('/values/current', async (req, res) => {
     const values = await redisClient.hGetAll('values');
     res.send(values);
 })
@@ -51,12 +56,12 @@ app.post('/values', async (req, res) => {
     if (index > 40) return res.status(422).send('Wrong index');
 
     await redisClient.hSet('values', index, 'Nothing yet!')
-    await redisPublisher.publish('insert', index)
+    await redisClient.publish('insert', index)
     await pgClient.query('INSERT INTO values(number) VALUES($1)', [index])
 
     res.send({working: true})
 })
 
-app.listen(4000, () => {
-    console.log('Listening on port 4000...')
+app.listen(5000, () => {
+    console.log('Listening on port 5000...')
 })
