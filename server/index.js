@@ -24,7 +24,7 @@ pgClient.query('CREATE TABLE IF NOT EXISTS values (number INT)')
 
 const redis = require('redis');
 let redisClient = undefined
-let redisURL = keys.redisHost + ':' + keys.redisPort
+let redisURL = 'redis://' + keys.redisHost + ':' + keys.redisPort
 
 async function initializeRedis() {
     redisClient = await redis.createClient({
