@@ -2,46 +2,28 @@ version: '3.4'
 
 services:
   nginx:
+    image: "luvwadhwani/multi-nginx"
     restart: always
-    build:
-      context: ./nginx
+    hostname: nginx
     ports:
-      - '3050:80'
-  postgres:
-    image: postgres
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-  redis:
-    image: redis
+      - "80:80"
   api:
-    build:
-      context: ./server
-    volumes:
-      - /usr/app/node_modules
-      - ./server:/usr/app
+    image: "luvwadhwani/multi-server"
+    hostname: api
     environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - POSTGRES_USER=postgres
-      - POSTGRES_HOST=postgres
-      - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_PORT=5432
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_HOST=$POSTGRES_HOST
+      - POSTGRES_DB=$POSTGRES_DB
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_PORT=$POSTGRES_PORT
   client:
-    environment:
-      - WDS_SOCKET_PORT=0
-    build:
-      context: ./client
-    volumes:
-      - /usr/app/node_modules
-      - ./client:/usr/app
+    image: "luvwadhwani/multi-client"
+    hostname: client
   worker:
+    image: "luvwadhwani/multi-worker"
     environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    build:
-      context: ./worker
-    volumes:
-      - /usr/app/node_modules
-      - ./worker:/usr/app
+      - REDIS_HOST=$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+    hostname: worker
