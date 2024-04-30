@@ -17,20 +17,23 @@ const pgClient = new Pool({
     port: keys.pgPort
 });
 
-pgClient.on('error', (err) => { console.log(err) });
+pgClient.on('postgres error', (err) => { console.log(err) });
 
 pgClient.query('CREATE TABLE IF NOT EXISTS values (number INT)')
         .catch(err => console.log(err));
 
-
 const redis = require('redis');
 
-let redisClient = redis.createClient({
-    url: 'redis://' + process.env.REDIS_HOST + ':' +process.env.REDIS_PORT
-})
+let redisClient = undefined
+
+let redisURL = 'redis://' + keys.redisHost + ':' + keys.redisPort
+
+console.log(redisURL)
 
 async function initializeRedis() {
-    redisClient = await redisClient.on('error', err => console.error('Redis Cluster Error', err)).connect();
+    redisClient = await redis.createClient({ url: redisURL})
+        .on('error', err => console.error('Redis Cluster Error', err))
+        .connect();
 }
 
 initializeRedis().catch(err => console.log(err));
