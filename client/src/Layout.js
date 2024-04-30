@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import {Outlet, Link} from "react-router-dom";
 
 const Layout = () => {
     return (
@@ -9,15 +9,11 @@ const Layout = () => {
                         <Link to="/">Home</Link>
                     </li>
                     <li>
-                        <Link to="/blogs">Blogs</Link>
-                    </li>
-                    <li>
-                        <Link to="/contact">Contact</Link>
+                        <Link to="/otherpage">OtherPage</Link>
                     </li>
                 </ul>
             </nav>
-
-            <Outlet />
+            <Outlet/>
         </>
     )
 };
