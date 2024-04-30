@@ -14,8 +14,7 @@ const pgClient = new Pool({
     host: keys.pgHost,
     password: keys.pgPassword,
     database: keys.pgDatabase,
-    port: keys.pgPort,
-    ssl: true
+    port: keys.pgPort
 });
 
 pgClient.on('postgres error', (err) => { console.log(err) });
@@ -25,7 +24,7 @@ pgClient.query('CREATE TABLE IF NOT EXISTS values (number INT)')
 
 const redis = require('redis');
 let redisClient = undefined
-let redisURL = 'redis://' + keys.redisHost + ':' + keys.redisPort
+let redisURL = keys.redisHost + ':' + keys.redisPort
 
 async function initializeRedis() {
     redisClient = await redis.createClient({
