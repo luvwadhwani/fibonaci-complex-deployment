@@ -14,7 +14,8 @@ const pgClient = new Pool({
     host: keys.pgHost,
     password: keys.pgPassword,
     database: keys.pgDatabase,
-    port: keys.pgPort
+    port: keys.pgPort,
+    ssl: true
 });
 
 pgClient.on('postgres error', (err) => { console.log(err) });
@@ -28,11 +29,8 @@ let redisURL = 'redis://' + keys.redisHost + ':' + keys.redisPort
 
 async function initializeRedis() {
     redisClient = await redis.createClient({
-        url: redisURL,
-        pingInterval: 9 * 1000,
-        socket: {
-            connectTimeout: false
-        }
+        host: keys.redisHost,
+        port: keys.redisPort
     })
         .on('error', err => console.error('Redis Cluster Error', err))
         .connect();
