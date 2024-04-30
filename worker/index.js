@@ -1,18 +1,16 @@
 const keys = require('./keys');
 
 const redis = require('redis');
-
 let redisClient = undefined
-
 let redisListener = undefined
-
 let redisURL = 'redis://' + keys.redisHost + ':' + keys.redisPort
 
 async function initializeRedis() {
-    console.log(redisURL)
     redisClient = await redis.createClient({
         url: redisURL,
-        pingInterval: 1000
+        socket: {
+            connectTimeout: false
+        }
     }).on('error', err => console.error('Redis Cluster Error', err)).connect()
 
     redisListener = await redisClient.duplicate();
