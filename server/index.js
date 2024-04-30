@@ -29,8 +29,9 @@ let redisURL = 'redis://' + keys.redisHost + ':' + keys.redisPort
 async function initializeRedis() {
     redisClient = await redis.createClient({
         url: redisURL,
+        pingInterval: 9 * 1000,
         socket: {
-            connectTimeout: 10 * 1000
+            connectTimeout: false
         }
     })
         .on('error', err => console.error('Redis Cluster Error', err))
