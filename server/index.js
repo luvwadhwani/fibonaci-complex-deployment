@@ -26,7 +26,7 @@ pgClient.query('CREATE TABLE IF NOT EXISTS values (number INT)')
 const redis = require('redis');
 
 let redisClient = redis.createClient({
-    url: process.env.REDIS_HOST + '://' + process.env.REDIS_HOST + ':' +process.env.REDIS_PORT
+    url: 'redis://' + process.env.REDIS_HOST + ':' +process.env.REDIS_PORT
 })
 
 let redisPublisher = undefined

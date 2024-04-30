@@ -8,7 +8,7 @@ let redisListener = undefined
 
 async function initializeRedis() {
     redisClient = await redis.createClient({
-        url: process.env.REDIS_HOST + '://' + process.env.REDIS_HOST + ':' +process.env.REDIS_PORT
+        url: 'redis://' + process.env.REDIS_HOST + ':' +process.env.REDIS_PORT
     }).connect();
 
     redisListener = await redisClient.duplicate();
