@@ -5,11 +5,13 @@ services:
     image: "luvwadhwani/multi-nginx"
     restart: always
     hostname: nginx
+    mem_reservation: 128m
     ports:
       - "80:80"
   api:
     image: "luvwadhwani/multi-server"
     hostname: api
+    mem_reservation: 128m
     environment:
       - REDIS_HOST=$REDIS_HOST
       - REDIS_PORT=$REDIS_PORT
@@ -20,9 +22,11 @@ services:
       - POSTGRES_PORT=$POSTGRES_PORT
   client:
     image: "luvwadhwani/multi-client"
+    mem_reservation: 128m
     hostname: client
   worker:
     image: "luvwadhwani/multi-worker"
+    mem_reservation: 128m
     environment:
       - REDIS_HOST=$REDIS_HOST
       - REDIS_PORT=$REDIS_PORT
