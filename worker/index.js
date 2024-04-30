@@ -8,11 +8,11 @@ let redisListener = undefined
 
 let redisURL = 'redis://' + keys.redisHost + ':' + keys.redisPort
 
-console.log(redisURL)
-
 async function initializeRedis() {
+    console.log(redisURL)
     redisClient = await redis.createClient({
-        url: redisURL
+        url: redisURL,
+        pingInterval: 1000
     }).on('error', err => console.error('Redis Cluster Error', err)).connect()
 
     redisListener = await redisClient.duplicate();
