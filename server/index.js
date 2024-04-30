@@ -29,10 +29,8 @@ let redisClient = redis.createClient({
     url: 'redis://' + process.env.REDIS_HOST + ':' +process.env.REDIS_PORT
 })
 
-let redisPublisher = undefined
-
 async function initializeRedis() {
-    redisClient = await redisClient.connect();
+    redisClient = await redisClient.on('error', err => console.error('Redis Cluster Error', err)).connect();
 }
 
 initializeRedis().catch(err => console.log(err));

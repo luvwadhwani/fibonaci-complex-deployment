@@ -9,7 +9,7 @@ let redisListener = undefined
 async function initializeRedis() {
     redisClient = await redis.createClient({
         url: 'redis://' + process.env.REDIS_HOST + ':' +process.env.REDIS_PORT
-    }).connect();
+    }).on('error', err => console.error('Redis Cluster Error', err)).connect()
 
     redisListener = await redisClient.duplicate();
 
