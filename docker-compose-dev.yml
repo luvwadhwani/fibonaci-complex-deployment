@@ -1,0 +1,51 @@
+version: '3.4'
+
+services:
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile-dev
+      context: ./nginx
+    ports:
+      - '3050:80'
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  redis:
+    image: redis
+  api:
+    build:
+      dockerfile: Dockerfile-dev
+      context: ./server
+    volumes:
+      - /usr/app/node_modules
+      - ./server:/usr/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - POSTGRES_USER=postgres
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5432
+  client:
+    environment:
+      - WDS_SOCKET_PORT=0
+    build:
+      dockerfile: Dockerfile-dev
+      context: ./client
+    volumes:
+      - /usr/app/node_modules
+      - ./client:/usr/app
+  worker:
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    build:
+      dockerfile: Dockerfile-dev
+      context: ./worker
+    volumes:
+      - /usr/app/node_modules
+      - ./worker:/usr/app
