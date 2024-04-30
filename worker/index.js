@@ -9,7 +9,7 @@ async function initializeRedis() {
     redisClient = await redis.createClient({
         url: redisURL,
         socket: {
-            connectTimeout: false
+            connectTimeout: 10 * 1000
         }
     }).on('error', err => console.error('Redis Cluster Error', err)).connect()
 
