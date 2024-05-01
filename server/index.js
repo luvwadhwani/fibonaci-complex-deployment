@@ -30,6 +30,7 @@ async function initializeRedis() {
     redisClient = await redis.createClient({
         url: redisURL
     }).on('error', err => console.error('Redis Cluster Error', err)).connect()
+
 }
 
 initializeRedis().catch(err => console.log(err));
@@ -44,16 +45,16 @@ app.get('/values/all', async (req, res) => {
 })
 
 app.get('/values/current', async (req, res) => {
-    // const values = await redisClient.hGetAll('values');
-    res.send([0]);
+    const values = await redisClient.hGetAll('values');
+    res.send(values);
 })
 
 app.post('/values', async (req, res) => {
     const index = req.body.index;
     if (index > 40) return res.status(422).send('Wrong index');
 
-    // await redisClient.hSet('values', index, 'Nothing yet!')
-    // await redisClient.publish('insert', index)
+    await redisClient.hSet('values', index, 'Nothing yet!')
+    await redisClient.publish('insert', index)
     await pgClient.query('INSERT INTO values(number) VALUES($1)', [index])
 
     res.send({working: true})
