@@ -28,21 +28,11 @@ pgClient.query('CREATE TABLE IF NOT EXISTS values (number INT)')
 
 async function initializeRedis() {
     redisClient = await redis.createClient({
-        url: redisURL,
-        socket: {
-            reconnectStrategy: retries => Math.min(retries * 50, 500),
-        },
-        pingInterval: 10000,
-    })
-        .on('error', err => console.error('Redis Cluster Error', err))
-        .on('ready', () => console.log('Redis is ready'))
-        .on('end', () => console.log('Redis is dead'))
-        .on('reconnecting', () => console.log('Redis is reconnecting'))
-
-    await redisClient.connect()
+        url: redisURL
+    }).on('error', err => console.error('Redis Cluster Error', err)).connect()
 }
 
-// initializeRedis().catch(err => console.log(err));
+initializeRedis().catch(err => console.log(err));
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
