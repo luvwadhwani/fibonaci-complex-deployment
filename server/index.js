@@ -31,7 +31,11 @@ async function initializeRedis() {
         url: redisURL
     })
         .on('error', err => console.error('Redis Cluster Error', err))
-        .connect();
+        .on('ready', () => console.log('Redis is ready'))
+        .on('end', () => console.log('Redis is dead'))
+        .on('reconnecting', () => console.log('Redis is reconnecting'))
+
+    await redisClient.connect()
 }
 
 initializeRedis().catch(err => console.log(err));
