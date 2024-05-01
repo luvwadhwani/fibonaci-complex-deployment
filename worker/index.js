@@ -7,7 +7,11 @@ let redisURL = 'redis://' + keys.redisHost + ':' + keys.redisPort
 
 async function initializeRedis() {
     redisClient = await redis.createClient({
-            url: redisURL
+            url: redisURL,
+            socket: {
+                reconnectStrategy: retries => Math.min(retries * 50, 500),
+            },
+            pingInterval: 10000,
         }).on('error', err => console.error('Redis Cluster Error', err))
         .on('ready', () => console.log('Redis is ready'))
         .on('end', () => console.log('Redis is dead'))
