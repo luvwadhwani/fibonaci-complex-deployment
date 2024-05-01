@@ -2,6 +2,10 @@ const keys = require('./keys');
 const express = require('express');
 const bodyParser = require('body-parser')
 const cors = require('cors');
+const redis = require('redis');
+
+let redisClient = undefined
+let redisURL = 'redis://' + keys.redisHost + ':' + keys.redisPort
 
 const app = express();
 app.use(cors());
@@ -21,10 +25,6 @@ pgClient.on('postgres error', (err) => { console.log(err) });
 
 pgClient.query('CREATE TABLE IF NOT EXISTS values (number INT)')
         .catch(err => console.log(err));
-
-const redis = require('redis');
-let redisClient = undefined
-let redisURL = 'redis://' + keys.redisHost + ':' + keys.redisPort
 
 async function initializeRedis() {
     redisClient = await redis.createClient({
