@@ -19,7 +19,7 @@ async function initializeRedis() {
     })
 }
 
-initializeRedis().catch(err => console.log(err));
+// initializeRedis().catch(err => console.log(err));
 
 function fib(index) {
     if (index < 2) return 1;
